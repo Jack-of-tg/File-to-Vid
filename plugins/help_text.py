@@ -11,6 +11,8 @@ logger = logging.getLogger(__name__)
 import os
 import sqlite3
 
+from pyrogram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
+
 # the secret configuration specific things
 if bool(os.environ.get("WEBHOOK", False)):
     from sample_config import Config
@@ -63,10 +65,17 @@ async def get_me_info(bot, update):
 async def start(bot, update):
     # logger.info(update)
     TRChatBase(update.from_user.id, update.text, "/start")
-    await bot.send_message(
-        chat_id=update.chat.id,
-        text=Translation.START_TEXT,
-        reply_to_message_id=update.message_id
+    await update.reply_text(
+                text="""**Hii {} I am Powerfull Stream Bot**
+                
+I Can Convert a File(Video) To a Streamable Video
+Just Sent Me The File and Reply The Media  and Sent /convert
+                
+For More Help Use /help
+Feel Free Join My Update Channel And Suppoert Group""".format(update.from_user.first_name),
+                reply_markup=InlineKeyboardMarkup([
+                    [ InlineKeyboardButton(text="💢 Channel 💢", url="https://t.me/CrazyBotsz"), InlineKeyboardButton(text="💢 Group 💢", url="https://t.me/CrazyBotszGrp")]
+              ])
     )
 
 
