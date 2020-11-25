@@ -9,6 +9,9 @@ import os
 import random
 import time
 
+from pyrogram import ReplyKeyboardMarkup, InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.errors import UserNotParticipant, UserBannedInChannel
+
 # the secret configuration specific things
 if bool(os.environ.get("WEBHOOK", False)):
     from sample_config import Config
@@ -34,11 +37,24 @@ from PIL import Image
 @pyrogram.Client.on_message(pyrogram.Filters.command(["converttovideo"]))
 async def convert_to_video(bot, update):
     if update.from_user.id in Config.BANNED_USERS:
-        await bot.send_message(
-            chat_id=update.chat.id,
-            text=Translation.BANNED_USER_TEXT,
-            reply_to_message_id=update.message_id
-        )
+        await update.reply_text("You are B A N N E D 🤣🤣🤣🤣")
+        return
+    TRChatBase(update.from_user.id, update.text, "/echo")
+    update_channel = Config.UPDATE_CHANNEL
+    if update_channel:
+        try:
+            user = await bot.get_chat_member(update_channel, update.chat.id)
+            if user.status == "kicked":
+               await update.reply_text("🤭 Sorry Dude, You are **B A N N E D 🤣🤣🤣**")
+               return
+        except UserNotParticipant:
+            #await update.reply_text(f"Join @{update_channel} To Use Me")
+            await update.reply_text(
+                text="**Join My Updates Channel to use ME 😎 🤭**",
+                reply_markup=InlineKeyboardMarkup([
+                    [ InlineKeyboardButton(text="Join My Updates Channel", url=f"https://t.me/{update_channel}")]
+              ])
+            )
         return
     TRChatBase(update.from_user.id, update.text, "converttovideo")
     if update.reply_to_message is not None:
